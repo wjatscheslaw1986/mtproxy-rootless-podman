@@ -1,7 +1,7 @@
 #!/bin/bash
 
-USER_SECRET_FILE_PATH=/run/mtproxy/user-secret
-PROXY_SECRET=/run/mtproxy/proxy-secret
+USER_SECRET_FILE_PATH=/run/secrets/mtproxy-user-pass
+PROXY_SECRET=/run/secrets/mtproxy-pass
 
 die() {
     log "ERROR: $*"
