@@ -33,17 +33,19 @@ Description=Safe & Secure $IMAGE Service ($SERVICE_NAME)
 After=network.target
 
 [Service]
+Type=simple
+WorkingDirectory=$HOME/mtproxy
 ExecStart=$HOME/.local/bin/${SERVICE_NAME}_run.sh $SERVICE_NAME $IMAGE $SUBUID_BLOCK_INDEX $LOG_LEVEL $BASE_DIR
 #ExecStartPost=
 ExecStop=/usr/bin/podman stop --ignore $SERVICE_NAME
 ExecStopPost=/usr/bin/podman rm --force --ignore $SERVICE_NAME
-Restart=always
-TimeoutStartSec=180
-TimeoutStopSec=30
-RestartSec=5
+Restart=on-failure
+TimeoutStartSec=100
+TimeoutStopSec=20
+RestartSec=3
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
 EOF
 
 cp "$TEMPLATE_FILE" $HOME/.local/bin/"$SERVICE_NAME"_run.sh && chmod 744 $HOME/.local/bin/"$SERVICE_NAME"_run.sh
