@@ -23,10 +23,3 @@ unset user_password
 
 echo "Podman secret 'mtproxy-user-pass' has been created"
 
-curl -s https://core.telegram.org/getProxySecret -o proxy_secret
-podman secret rm mtproxy-pass 2>/dev/null || true
-podman secret create mtproxy-pass proxy_secret
-shred proxy_secret && rm proxy_secret
-
-echo "Podman secret 'mtproxy-pass' has been created"
-

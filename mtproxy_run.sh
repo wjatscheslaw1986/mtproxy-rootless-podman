@@ -14,6 +14,7 @@ SUBUID_BLOCK_INDEX=${3}
 LOG_LEVEL=${4:-warn}
 BASE_DIR=${5:-"${HOME}"}
 readonly BLOCK_SIZE=65536
+USE_WORKING_DIR=${6:-0}
 
 if [ -z "${SUBUID_BLOCK_INDEX}" ]; then
     echo "SUBUID_BLOCK_INDEX isn't set, but required."
@@ -44,6 +45,13 @@ GIDMAP=(
     --gidmap=0:$((HOST_UID_BASE + 1)):"${BLOCK_SIZE}"
 )
 
+WORKING_DIRECTORY=(
+    -v ${BASE_DIR}/.config/MTProxy:/opt/MTProxy:rw
+)
+
+if [ $((USE_WORKING_DIR)) == 0]; then
+    WORKING_DIRECTORY=()
+fi
 
 if [ -z "${SERVICE_NAME}" ]; then
     echo "Install autoload: service name isn't set, but required."
@@ -88,7 +96,7 @@ exec podman run \
        -p 443:443/tcp \
        -p 443:443/udp \
        --name "$SERVICE_NAME" \
-       -v ${BASE_DIR}/mtproxy:/opt/mtproxy:ro \
+       "${WORKING_DIRECTORY}" \
        --tmpfs /tmp:rw,noexec,nosuid,size=64m \
        --tmpfs /run:rw,noexec,nosuid,size=16m \
        --tmpfs /var/run,rw,noexec,nosuid,size=16m \

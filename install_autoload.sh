@@ -34,7 +34,7 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=$HOME/mtproxy
+#WorkingDirectory=$HOME/.config/MTProxy
 ExecStart=$HOME/.local/bin/${SERVICE_NAME}_run.sh $SERVICE_NAME $IMAGE $SUBUID_BLOCK_INDEX $LOG_LEVEL $BASE_DIR
 #ExecStartPost=
 ExecStop=/usr/bin/podman stop --ignore $SERVICE_NAME
