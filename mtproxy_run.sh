@@ -49,7 +49,7 @@ WORKING_DIRECTORY=(
     -v ${BASE_DIR}/.config/MTProxy:/opt/MTProxy:rw
 )
 
-if [ $((USE_WORKING_DIR)) == 0]; then
+if [ $((USE_WORKING_DIR)) == 0 ]; then
     WORKING_DIRECTORY=()
 fi
 
@@ -92,7 +92,6 @@ exec podman run \
        "${UIDMAP[@]}" \
        "${GIDMAP[@]}" \
        --secret source=mtproxy-user-pass,type=mount,uid=0,gid=0,mode=0400,target=mtproxy-user-pass \
-       --secret source=mtproxy-pass,type=mount,uid=0,gid=0,mode=0400,target=mtproxy-pass \
        -p 443:443/tcp \
        -p 443:443/udp \
        --name "$SERVICE_NAME" \

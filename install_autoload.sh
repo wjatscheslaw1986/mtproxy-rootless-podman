@@ -13,8 +13,11 @@ BASE_DIR=${4:-"${HOME}"}
 LOG_LEVEL=${5:-warn}
 TEMPLATE_FILE=mtproxy_run.sh
 
-if [ -z "${ORDINAL}" ]; then
-    echo "Install autoload: instance ordinal isn't set, but required."
+if [ ! \( "${ORDINAL}" =~ '^[0-9]+$' \) ]; then
+    echo "Install autoload: instance ordinal must be an integer."
+    exit 1
+elif [ $ORDINAL -le 0 ]
+    echo "Install autoload: instance ordinal must be an integer."
     exit 1
 fi
 
@@ -45,7 +48,7 @@ TimeoutStopSec=20
 RestartSec=3
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
 
 cp "$TEMPLATE_FILE" $HOME/.local/bin/"$SERVICE_NAME"_run.sh && chmod 744 $HOME/.local/bin/"$SERVICE_NAME"_run.sh

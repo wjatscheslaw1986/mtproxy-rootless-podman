@@ -1,6 +1,7 @@
 FROM docker.io/library/debian:13.1-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/MTProxy/objs/bin:${PATH}"
 
 RUN set -eux; \
     apt-get update; \
@@ -8,8 +9,7 @@ RUN set -eux; \
         git curl build-essential libssl-dev zlib1g-dev; \
     rm -rf /var/lib/apt/lists/*; \
     git clone https://github.com/TelegramMessenger/MTProxy && \
-    mkdir -p /opt/MTProxy; \
-    cd MTProxy && make && cd objs/bin
+    cd MTProxy && make && mkdir -p /opt/MTProxy;
 
 COPY --chmod=0544 entrypoint.sh /usr/local/bin/entrypoint.sh
 

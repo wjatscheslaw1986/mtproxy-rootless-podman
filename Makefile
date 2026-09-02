@@ -17,13 +17,12 @@ SYSTEMD_SERVICE_FILE := mtproxy_run.sh
 BLOCK_SIZE := 65536
 SUBUID_BLOCK_INDEX := 3
 INTERMEDIATE_UID_OFFSET := $(shell echo $$(( $(SUBUID_BLOCK_INDEX) * $(BLOCK_SIZE) + 1 )))
-HOST_UID_OFFSET := $(shell echo $$(( $(INTERMEDIATE_UID_OFFSET) + 100000 - 1)))
 
 
 .PHONY: all build secrets config autoload
 
 
-all: build secrets config autoload
+all: build secrets debug clean down stop autoload
 
 
 build:
@@ -34,12 +33,9 @@ build:
 		.
 
 
-config:
-	@echo "Create mount directory and download config." ./update_config.sh "$(BASE_DIR)"
-
-
 secrets:
-	@echo "Create/update secrets." ./renew_podman_secrets.sh
+	@echo "Create/update secrets."
+	./renew_podman_secrets.sh
 
 
 debug:
@@ -74,16 +70,14 @@ autoload:
 	@test -f "$(SYSTEMD_SERVICE_FILE)" || \
 		{ echo "ERROR: missing $(SYSTEMD_SERVICE_FILE)" >&2; exit 1; }
 	
-	@./install_autoload.sh localhost/"$(IMAGE)" "$(ORDINAL)" "$(SUBUID_BLOCK_INDEX)" "$(BASE_DIR)" warn
+	@./install_autoload.sh localhost/"$(IMAGE)" "$(INSTANCE_ID)" "$(SUBUID_BLOCK_INDEX)" "$(BASE_DIR)" warn
 	
 	@echo "Done."
 
 
 stop:
 	@echo 'Stop the systemd service and the container'
-	
-	-systemctl --user stop podman-$(CONTAINER).service podman-$(VSFTPD_CONTAINER).service
-	
+	-systemctl --user stop podman-$(CONTAINER).service
 	-podman container stop "$(CONTAINER)"
 
 

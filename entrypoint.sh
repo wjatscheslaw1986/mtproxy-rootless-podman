@@ -1,38 +1,32 @@
 #!/bin/bash
 
-USER_SECRET_FILE_PATH=/run/secrets/mtproxy-user-pass
-PROXY_SECRET=/run/secrets/mtproxy-pass
-
-die() {
-    log "ERROR: $*"
-    exit 1
-}
-
-require_file() {
-    local file="$1"
-
-    [[ -f "$file" ]] || die "Required file does not exist: $file"
-    [[ -r "$file" ]] || die "Required file is not readable: $file"
-}
+readonly USER_SECRET_FILE_PATH=/run/secrets/mtproxy-user-pass
+readonly PROXY_SECRET=/run/mtproxy-pass
+readonly PROXY_CONFIG=/run/proxy-multi.conf
+readonly DEFAULT_USER_PASSWORD=xxxyyyzzz
 
 read_secret() {
-       local file="$1"
+    local file="$1"
+    local value
 
-       require_file "$file"
+    if [ \( ! -f "$file" \) -o \( ! -r "$file" \) ]
+    then value="$DEFAULT_USER_PASSWORD"
+    fi
 
-       local value
-       value="$(<"$file")"
+    if [ -n "$value" ]
+    then value="$(<"$file")"
+    fi
 
-       [[ -n "$value" ]] || die "Secret is empty: $file"
+    [[ -n "$value" ]] || value="$DEFAULT_USER_PASSWORD"
 
-       printf '%s' "$value"
+    printf '%s' "$value"
 }
 
 #Download Telegram server secret
-curl -s https://core.telegram.org/getProxySecret -o "$PROXY_SECRET" && chmod 0400 "$PROXY_SECRET"
+curl --fail --silent --show-error --location --retry 5 --retry-all-errors https://core.telegram.org/getProxySecret -o "$PROXY_SECRET" && chmod 0400 "$PROXY_SECRET"
 
 #Download Telegram server config
-curl -s https://core.telegram.org/getProxyConfig -o /opt/MTProxy/proxy-multi.conf && chmod 0400 /opt/MTProxy/proxy-multi.conf
+curl --fail --silent --show-error --location --retry 5 --retry-all-errors https://core.telegram.org/getProxyConfig -o "$PROXY_CONFIG" && chmod 0400 "$PROXY_CONFIG"
 
 exec mtproto-proxy -u nobody -p 8888 -H 443 -S "$(read_secret "$USER_SECRET_FILE_PATH")" --aes-pwd "$PROXY_SECRET" /opt/MTProxy/proxy-multi.conf -M 1
 
