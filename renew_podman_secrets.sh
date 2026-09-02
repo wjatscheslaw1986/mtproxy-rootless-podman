@@ -2,7 +2,7 @@
 
 umask 077
 
-read -r -s -p "Enter proxy password: " user_password
+read -r -s -p "Enter proxy user password: " user_password
 echo
 
 # Length validation
