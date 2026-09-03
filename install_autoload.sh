@@ -13,11 +13,8 @@ BASE_DIR=${4:-"${HOME}"}
 LOG_LEVEL=${5:-warn}
 TEMPLATE_FILE=mtproxy_run.sh
 
-if [ ! \( "${ORDINAL}" =~ '^[0-9]+$' \) ]; then
-    echo "Install autoload: instance ordinal must be an integer."
-    exit 1
-elif [ $ORDINAL -le 0 ]
-    echo "Install autoload: instance ordinal must be an integer."
+if [[ ! "$ORDINAL" =~ ^[0-9]+$ ]] || (( ORDINAL <= 0 )); then
+    echo "Install autoload: instance ordinal must be a positive integer."
     exit 1
 fi
 

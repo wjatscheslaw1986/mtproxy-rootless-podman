@@ -8,10 +8,7 @@ INSTANCE_ID := 1
 CONTAINER := $(IMAGE)-$(INSTANCE_ID)
 
 BASE_DIR := $(HOME)
-INSTANCE_DIRECTORY := $(BASE_DIR)/$(CONTAINER)
 
-DB_ROOT_PASSWORD_FILE := secrets/mtproxy-user-pass
-DB_PASSWORD_FILE := secrets/mtproxy-pass
 SYSTEMD_SERVICE_FILE := mtproxy_run.sh
 
 BLOCK_SIZE := 65536
@@ -19,10 +16,10 @@ SUBUID_BLOCK_INDEX := 3
 INTERMEDIATE_UID_OFFSET := $(shell echo $$(( $(SUBUID_BLOCK_INDEX) * $(BLOCK_SIZE) + 1 )))
 
 
-.PHONY: all build secrets config autoload
+.PHONY: all build secrets debug config autoload stop down clean
 
 
-all: build secrets debug clean down stop autoload
+all: build secrets autoload
 
 
 build:
@@ -54,7 +51,6 @@ debug:
 		--uidmap=0:$(INTERMEDIATE_UID_OFFSET):$(BLOCK_SIZE) \
 		--gidmap=0:$(INTERMEDIATE_UID_OFFSET):$(BLOCK_SIZE) \
 		--secret source=mtproxy-user-pass,type=mount,uid=0,gid=0,mode=0400,target=mtproxy-user-pass \
-		--secret source=mtproxy-pass,type=mount,uid=0,gid=0,mode=0400,target=mtproxy-pass \
 		--name "$(CONTAINER)" \
 		-p 443:443/tcp \
 		-p 443:443/udp \

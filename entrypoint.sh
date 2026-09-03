@@ -13,7 +13,7 @@ read_secret() {
     then value="$DEFAULT_USER_PASSWORD"
     fi
 
-    if [ -n "$value" ]
+    if [ -z "$value" ]
     then value="$(<"$file")"
     fi
 

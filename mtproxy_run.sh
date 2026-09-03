@@ -27,9 +27,9 @@ fi
         exit 1
     }
 
-HOST_UID_BASE=$((SUBUID_BLOCK_INDEX * BLOCK_SIZE))
+INTERMEDIATE_UID_OFFSET=$((SUBUID_BLOCK_INDEX * BLOCK_SIZE))
 
-LAST_UID=$((HOST_UID_BASE + BLOCK_SIZE - 1))
+LAST_UID=$((INTERMEDIATE_UID_OFFSET + BLOCK_SIZE - 1))
 
 (( LAST_UID <= 512 * BLOCK_SIZE - 1 )) ||
     {
@@ -38,15 +38,15 @@ LAST_UID=$((HOST_UID_BASE + BLOCK_SIZE - 1))
     }
 
 UIDMAP=(
-    --uidmap=0:$((HOST_UID_BASE + 1)):"${BLOCK_SIZE}"
+    --uidmap=0:$((INTERMEDIATE_UID_OFFSET + 1)):"${BLOCK_SIZE}"
 )
 
 GIDMAP=(
-    --gidmap=0:$((HOST_UID_BASE + 1)):"${BLOCK_SIZE}"
+    --gidmap=0:$((INTERMEDIATE_UID_OFFSET + 1)):"${BLOCK_SIZE}"
 )
 
 WORKING_DIRECTORY=(
-    -v ${BASE_DIR}/.config/MTProxy:/opt/MTProxy:rw
+    -v "${BASE_DIR}/.config/MTProxy:/opt/MTProxy:rw"
 )
 
 if [ $((USE_WORKING_DIR)) == 0 ]; then
@@ -67,7 +67,7 @@ fi
 echo "Variable values:"
 echo "IMAGE=$IMAGE"
 echo "SERVICE_NAME=$SERVICE_NAME"
-echo "HOST_UID_BASE=$HOST_UID_BASE"
+echo "INTERMEDIATE_UID_OFFSET=$INTERMEDIATE_UID_OFFSET"
 echo "LAST_UID=$LAST_UID"
 echo "UIDMAP=$UIDMAP"
 echo "GIDMAP=$GIDMAP"
@@ -95,7 +95,7 @@ exec podman run \
        -p 443:443/tcp \
        -p 443:443/udp \
        --name "$SERVICE_NAME" \
-       "${WORKING_DIRECTORY}" \
+       "${WORKING_DIRECTORY[@]}" \
        --tmpfs /tmp:rw,noexec,nosuid,size=64m \
        --tmpfs /run:rw,noexec,nosuid,size=16m \
        --tmpfs /var/run,rw,noexec,nosuid,size=16m \
