@@ -5,12 +5,6 @@ umask 077
 read -r -s -p "Enter proxy user password: " user_password
 echo
 
-# Length validation
-if (( ${#user_password} < 6 || ${#user_password} > 128 )); then
-    echo "Error: proxy client password must be between 6 and 128 characters." >&2
-    exit 1
-fi
-
 printf '%s' "$user_password" > mtproxy_user_pass
 
 podman secret rm mtproxy-user-pass 2>/dev/null || true
