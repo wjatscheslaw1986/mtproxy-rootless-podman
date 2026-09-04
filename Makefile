@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := install
 
 IMAGE := mtproxy
 
@@ -19,8 +19,7 @@ INTERMEDIATE_UID_OFFSET := $(shell echo $$(( $(SUBUID_BLOCK_INDEX) * $(BLOCK_SIZ
 .PHONY: all build secrets debug config autoload stop down clean
 
 
-all: build secrets autoload
-
+install: secrets autoload
 
 build:
 	@echo "Build MTProxy image"
@@ -62,12 +61,9 @@ debug:
 
 autoload:
 	@echo "Installing user's systemd services for autoload..."
-	
 	@test -f "$(SYSTEMD_SERVICE_FILE)" || \
 		{ echo "ERROR: missing $(SYSTEMD_SERVICE_FILE)" >&2; exit 1; }
-	
-	@./install_autoload.sh localhost/"$(IMAGE)" "$(INSTANCE_ID)" "$(SUBUID_BLOCK_INDEX)" "$(BASE_DIR)" warn
-	
+	@./install_autoload.sh ghcr.io/wjatscheslaw1986/"$(IMAGE)":latest "$(INSTANCE_ID)" "$(SUBUID_BLOCK_INDEX)" "$(BASE_DIR)" warn
 	@echo "Done."
 
 
