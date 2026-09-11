@@ -8,7 +8,7 @@ ARG COMMIT_HASH="f36d8af769ffaeac36978d38c2c0f6d1104c2137"
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        git curl build-essential libssl-dev zlib1g-dev; \
+        git curl build-essential libssl-dev zlib1g-dev ca-certificates; \
     rm -rf /var/lib/apt/lists/*; \
     git clone https://github.com/TelegramMessenger/MTProxy /MTProxy && \
     cd MTProxy && git checkout $COMMIT_HASH && make && mkdir -p /opt/MTProxy;
