@@ -71,6 +71,7 @@ echo "INTERMEDIATE_UID_OFFSET=$INTERMEDIATE_UID_OFFSET"
 echo "LAST_UID=$LAST_UID"
 echo "UIDMAP=$UIDMAP"
 echo "GIDMAP=$GIDMAP"
+echo "WORKING_DIRECTORY=$WORKING_DIRECTORY"
 
 podman image exists "$IMAGE" ||
     {
@@ -78,7 +79,7 @@ podman image exists "$IMAGE" ||
         exit 1
     }
 
-# Replace the shell with Podman so signals propagate directly, using 'exec':
+# Replace the shell with Podman using 'exec' so that signals propagate directly:
 exec podman run \
        --log-level="${LOG_LEVEL}" \
        --log-driver=journald \
