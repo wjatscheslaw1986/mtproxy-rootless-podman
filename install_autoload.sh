@@ -7,7 +7,7 @@ fi
 
 IMAGE=${1}
 ORDINAL=${2:-1}
-SERVICE_NAME=${IMAGE}-${ORDINAL}
+SERVICE_NAME=mtproxy-${ORDINAL}
 SUBUID_BLOCK_INDEX=${3:-0}
 BASE_DIR=${4:-"${HOME}"}
 LOG_LEVEL=${5:-warn}
@@ -29,7 +29,7 @@ mkdir -p "$HOME/.config/systemd/user" "$HOME/.local/bin"
 
 cat > "$SERVICE_PATH" << EOF
 [Unit]
-Description=Safe & Secure $IMAGE Service ($SERVICE_NAME)
+Description=Safe & Secure MTProxy Service ($SERVICE_NAME)
 After=network.target
 
 [Service]
