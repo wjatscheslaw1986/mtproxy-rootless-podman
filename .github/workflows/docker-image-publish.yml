@@ -9,7 +9,8 @@ on:
     branches: [ main ]
 
 env:
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: wjatscheslaw1986/mtproxy
+
 
 permissions:
   contents: read
