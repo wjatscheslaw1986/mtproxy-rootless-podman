@@ -53,3 +53,6 @@ cp "$TEMPLATE_FILE" $HOME/.local/bin/"$SERVICE_NAME"_run.sh && chmod 744 $HOME/.
 systemctl --user daemon-reload
 systemctl --user enable podman-$SERVICE_NAME.service
 loginctl enable-linger $(whoami) || true
+podman pull docker pull ghcr.io/wjatscheslaw1986/mtproxy:latest
+systemctl --user restart podman-$SERVICE_NAME.service
+
