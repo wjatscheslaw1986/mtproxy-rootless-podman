@@ -1,28 +1,21 @@
 #!/bin/bash
 
 set -eu
-
 umask 077
 
 read -r -s -p "Enter proxy user password (16 characters): " user_password
-echo
+printf '\n'
 
 password_length=${#user_password}
 
-if [ ! ${password_length} -eq 16 ]; then
-    echo "User password length must be exactly 16 characters of length"
+if [[ ! "$user_password" =~  ^[a-zA-Z0-9!@#%+=_,.:/-]{16}$ ]]; then
+    printf '%s\n' "Password must contain exactly 16 printable ASCII characters" >&2
     exit 1
 fi
 
-echo "$user_password" | od -An -v -tx1 | tr -d ' \n' > mtproxy_user_pass
+printf '%s' "$user_password" | od -An -v -tx1 | tr -d ' \n' | podman secret create --replace mtproxy-user-pass -
 
-podman secret rm mtproxy-user-pass 2>/dev/null || true
-podman secret create mtproxy-user-pass mtproxy_user_pass
-
-shred mtproxy_user_pass && rm mtproxy_user_pass
-
-user_password=
 unset user_password
 
-echo "Podman secret 'mtproxy-user-pass' has been created"
+printf '%s\n' "Podman secret 'mtproxy-user-pass' has been created"
 
