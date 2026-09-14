@@ -13,7 +13,8 @@ if [[ ! "$user_password" =~  ^[a-zA-Z0-9!@#%+=_,.:/-]{16}$ ]]; then
     exit 1
 fi
 
-printf '%s' "$user_password" | od -An -v -tx1 | tr -d ' \n' | podman secret create --replace mtproxy-user-pass -
+podman secret rm mtproxy-user-pass 2>/dev/null || true
+printf '%s' "$user_password" | od -An -v -tx1 | tr -d ' \n' | podman secret create mtproxy-user-pass -
 
 unset user_password
 
