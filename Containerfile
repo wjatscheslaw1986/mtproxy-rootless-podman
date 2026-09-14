@@ -15,6 +15,6 @@ RUN set -eux; \
 
 COPY --chmod=0544 entrypoint.sh /usr/local/bin/entrypoint.sh
 
-EXPOSE 443
+EXPOSE 9111
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
