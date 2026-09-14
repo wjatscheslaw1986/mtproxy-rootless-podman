@@ -11,7 +11,9 @@ SERVICE_NAME=mtproxy-${ORDINAL}
 SUBUID_BLOCK_INDEX=${3:-0}
 BASE_DIR=${4:-"${HOME}"}
 LOG_LEVEL=${5:-warn}
-TEMPLATE_FILE=mtproxy_run.sh
+USE_WORKING_DIR=${6:-0}
+readonly TEMPLATE_FILE=mtproxy_run.sh
+readonly BLOCK_SIZE=65536
 
 if [[ ! "$ORDINAL" =~ ^[0-9]+$ ]] || (( ORDINAL <= 0 )); then
     echo "Install autoload: instance ordinal must be a positive integer."
@@ -54,5 +56,13 @@ systemctl --user daemon-reload
 systemctl --user enable podman-$SERVICE_NAME.service
 loginctl enable-linger $(whoami) || true
 podman pull ghcr.io/wjatscheslaw1986/mtproxy:latest
-systemctl --user restart podman-$SERVICE_NAME.service
+
+if [ $((USE_WORKING_DIR)) == 0 ]; then
+    systemctl --user restart podman-$SERVICE_NAME.service
+else
+    local intermediate_uid_offset=$((SUBUID_BLOCK_INDEX * BLOCK_SIZE))
+    mkdir -p ${BASE_DIR}/.config/MTProxy
+    echo "You must execute the following as root:\nchown $intermediate_uid_offset:$intermediate_uid_offset ${BASE_DIR}/.config/MTProxy\nchmod 755 ${BASE_DIR}/.config/MTProxy"
+    echo "After you do this, execute as the norman (unprivileged) user:\nsystemctl --user restart podman-$SERVICE_NAME.service"
+fi
 

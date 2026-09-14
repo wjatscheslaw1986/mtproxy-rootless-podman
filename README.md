@@ -18,23 +18,23 @@ The default `SUBUID_BLOCK_INDEX` is `3` and each block contains 65,536 IDs. With
 
 ## Installation
 
-### 1. Allow rootless binding to port 443
+### 1. Install and run the service
 
-Create a persistent sysctl configuration and apply it:
-
-```sh
-printf '%s\n' 'net.ipv4.ip_unprivileged_port_start=443' | sudo tee /etc/sysctl.d/99-mtproxy-rootless.conf
-sudo sysctl --system
-```
-
-### 2. Install and run the service
-
-Assuming you Run the following command as the regular, non-root user from the project directory:
+Run the following command as the regular, non-root user from the project directory:
 
 ```sh
 make
+```
+
+Or, if you want to mount MTProxy working directory from the host, the command should be:
+
+```sh
+make USE_WORKDIR=1
 systemctl --user restart podman-mtproxy-1.service
 ```
+
+> [!IMPORTANT]
+> Follow the instructions in the output of the `make` command. In the latter case for example, you'll be asked to create the directory on the host, and to chown/chmod it.
 
 This does:
 
@@ -44,7 +44,7 @@ This does:
 
 When prompted for the proxy client password, enter a password between 6 and 128 characters, or leave it blank for the default client password `xxxyyyzzz`. The secret is safely stored in Podman's secret store rather than in the image or the systemd unit.
 
-### 3. Check the service
+### 2. Check the service
 
 ```sh
 systemctl --user status podman-mtproxy-1.service

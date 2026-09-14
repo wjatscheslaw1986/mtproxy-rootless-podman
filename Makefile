@@ -15,6 +15,7 @@ BLOCK_SIZE := 65536
 SUBUID_BLOCK_INDEX := 3
 INTERMEDIATE_UID_OFFSET := $(shell echo $$(( $(SUBUID_BLOCK_INDEX) * $(BLOCK_SIZE) + 1 )))
 
+USE_WORKDIR := 0
 
 .PHONY: all build secrets debug config autoload stop down clean
 
@@ -63,7 +64,7 @@ autoload:
 	@echo "Installing user's systemd services for autoload..."
 	@test -f "$(SYSTEMD_SERVICE_FILE)" || \
 		{ echo "ERROR: missing $(SYSTEMD_SERVICE_FILE)" >&2; exit 1; }
-	@./install_autoload.sh ghcr.io/wjatscheslaw1986/"$(IMAGE)":latest "$(INSTANCE_ID)" "$(SUBUID_BLOCK_INDEX)" "$(BASE_DIR)" warn
+	@./install_autoload.sh ghcr.io/wjatscheslaw1986/"$(IMAGE)":latest "$(INSTANCE_ID)" "$(SUBUID_BLOCK_INDEX)" "$(BASE_DIR)" warn "$(USE_WORKDIR)"
 	@echo "Done."
 
 
