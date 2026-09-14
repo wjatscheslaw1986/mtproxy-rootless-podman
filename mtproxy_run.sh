@@ -94,7 +94,6 @@ exec podman run \
        "${GIDMAP[@]}" \
        --secret source=mtproxy-user-pass,type=mount,uid=0,gid=0,mode=0400,target=mtproxy-user-pass \
        -p 9111:443/tcp \
-       -p 9111:443/udp \
        --name "$SERVICE_NAME" \
        "${WORKING_DIRECTORY[@]}" \
        --tmpfs /tmp:rw,noexec,nosuid,size=64m \
