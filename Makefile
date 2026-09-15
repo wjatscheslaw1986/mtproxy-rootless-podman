@@ -26,7 +26,7 @@ build:
 	@echo "Build MTProxy image"
 	podman build \
 		--tag $(IMAGE) \
-		--file Containerfile
+		--file Containerfile \
 		.
 
 

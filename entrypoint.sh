@@ -30,5 +30,5 @@ rm -f "$PROXY_SECRET" && curl --fail --silent --show-error --location --retry 5 
 #Download Telegram server config
 rm -f "$PROXY_CONFIG" && curl --fail --silent --show-error --location --retry 5 --retry-all-errors https://core.telegram.org/getProxyConfig -o "$PROXY_CONFIG" && chmod 0400 "$PROXY_CONFIG"
 
-exec mtproto-proxy -u nobody -p 8888 -H 9111 -S "$(read_secret "$USER_SECRET_FILE_PATH")" --aes-pwd "$PROXY_SECRET" "$PROXY_CONFIG" -M 1
+exec mtproto-proxy -u nobody -p 8888 -H 9111 -S $(read_secret "$USER_SECRET_FILE_PATH") --aes-pwd "$PROXY_SECRET" "$PROXY_CONFIG" -M 1
 
