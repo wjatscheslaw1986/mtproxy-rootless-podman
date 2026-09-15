@@ -22,6 +22,8 @@ read_secret() {
         echo "WARNING: invalid MTProxy secret: expected 32 hex digits. Fallback to a default password"
         value="$DEFAULT_USER_PASSWORD"
     fi
+
+    printf '%s' "$value"
 }
 
 #Download Telegram server secret
