@@ -5,23 +5,23 @@ set -eu
 readonly USER_SECRET_FILE_PATH=/run/secrets/mtproxy-user-pass
 readonly PROXY_SECRET=/run/mtproxy-pass
 readonly PROXY_CONFIG=/run/proxy-multi.conf
-readonly DEFAULT_USER_PASSWORD=xxxyyyzzz
+readonly DEFAULT_USER_PASSWORD=61616161616161616161616161616161
 
 read_secret() {
     local file="$1"
-    local value
+    local value=""
 
     if [ \( ! -f "$file" \) -o \( ! -r "$file" \) ]
-    then value="$DEFAULT_USER_PASSWORD"
+        then echo "ERROR: secret file is missing of unreadable: $file" >&2
+        exit 1
     fi
 
-    if [ -z "$value" ]
-    then value="$(<"$file")"
+    value="$(<"$file")"
+
+    if [[ ! "$value" =~ ^[0-9a-fA-F]{32}$ ]]; then
+        echo "WARNING: invalid MTProxy secret: expected 32 hex digits. Fallback to a default password"
+        value="$DEFAULT_USER_PASSWORD"
     fi
-
-    [[ -n "$value" ]] || value="$DEFAULT_USER_PASSWORD"
-
-    printf '%s' "$value"
 }
 
 #Download Telegram server secret

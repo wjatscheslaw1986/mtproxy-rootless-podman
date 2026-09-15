@@ -42,7 +42,7 @@ This does:
 2. Installs and enables a user-level systemd service for the container, with lingering.
 3. Starts the service
 
-When prompted for the proxy client password, enter a password between 6 and 128 characters, or leave it blank for the default client password `xxxyyyzzz`. The secret is safely stored in Podman's secret store rather than in the image or the systemd unit.
+When prompted for the proxy client password, enter a password between 6 and 128 characters, or leave it blank for the default client password `aaaaaaaaaaaaaaaa`. The secret is safely stored in Podman's secret store rather than in the image or the systemd unit.
 
 ### 2. Check the service
 
