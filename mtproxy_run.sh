@@ -84,7 +84,8 @@ exec podman run \
        --log-level="${LOG_LEVEL}" \
        --log-driver=journald \
        --rm \
-       --network pasta \
+       --network host \
+       --memory 128m \
        --read-only \
        --security-opt=no-new-privileges \
        --cap-drop=ALL \
